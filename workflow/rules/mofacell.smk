@@ -1,7 +1,7 @@
 rule create_mdata: # Done
     input:
         h5ad_input = 'results/preprocessing/{dataset}.h5ad',
-        coldata_path = 'data/metadata_clean.csv'#'data/Metadata_For_Charlotte.csv'
+        coldata_path = config["metadata"]#'data/metadata_clean.csv'#'data/Metadata_For_Charlotte.csv'
     output:
         h5ad_output = 'results/mofacell/{dataset}~{subset}.h5ad',
         h5mu_output = 'results/mofacell/{dataset}~{subset}.h5mu'
@@ -19,7 +19,7 @@ rule create_mdata: # Done
         cell_subset = lambda wildcards: config["subsets"][wildcards.subset]["cell_subset"],
         drop_views = lambda wildcards: config["mofacell"][wildcards.dataset][wildcards.subset]["drop_views"]
     singularity:
-        'workflow/envs/scanpy.0.0.5.sif'
+        config["singularities"]["scanpy"]#'workflow/envs/scanpy.0.0.5.sif'
     script:
         '../scripts/mofacell/create_mdata.py'
 
@@ -34,7 +34,7 @@ rule run_liana:
         sample_key = 'EdgarID',
         groupby = lambda wildcards: config["subsets"][wildcards.subset]["groupby"]
     singularity:
-        'workflow/envs/scanpy.0.0.5.sif'
+        config["singularities"]["scanpy"]#'workflow/envs/scanpy.0.0.5.sif'
     script:
         '../scripts/mofacell/run_liana.py'
 
@@ -49,7 +49,7 @@ rule create_liana_mdata:
         sample_key = 'EdgarID',
         groupby = lambda wildcards: config["subsets"][wildcards.subset]["groupby"]
     singularity:
-        'workflow/envs/scanpy.0.0.5.sif'
+        config["singularities"]["scanpy"]#'workflow/envs/scanpy.0.0.5.sif'
     script:
         '../scripts/mofacell/create_liana_mdata.py'
 
@@ -65,7 +65,7 @@ rule combine_liana_mdata:
         cell_subset = lambda wildcards: config["niches"][wildcards.dataset][wildcards.niche]["cell_subset"],
         hvg = 'hvg'
     singularity:
-        'workflow/envs/scanpy.0.0.5.sif'
+        config["singularities"]["scanpy"]#'workflow/envs/scanpy.0.0.5.sif'
     script:
         '../scripts/mofacell/combine_liana_mdata.py'
 
@@ -84,7 +84,7 @@ rule run_mofa_subset: # Done
         hvg = lambda wildcards: wildcards.hvg,
         sample_key = 'EdgarID'
     singularity:
-        'workflow/envs/mofaxmetacells.0.0.2.sif'
+        config["singularities"]["mofaxmetacells"] #'workflow/envs/mofaxmetacells.0.0.2.sif'
     script:
         '../scripts/mofacell/run_mofa_subset.py'
 
@@ -97,7 +97,7 @@ rule calculate_r2_subset: # Done, updated 21.02.24
     params:
         condition_key = 'Cohort'
     singularity:
-        'workflow/envs/scanpy.0.0.5.sif'
+        config["singularities"]["scanpy"]#'workflow/envs/scanpy.0.0.5.sif'
     script:
         '../scripts/mofacell/calculate_r2.py'
 
@@ -109,7 +109,7 @@ rule plot_r2_scores: # Done 21.02.24
         plt = 'plots/mofacell/scores_r2_boxplot~{dataset}~{subset}~{hvg}.pdf',
         ggs = 'results/mofacell/scores_r2_boxplot~{dataset}~{subset}~{hvg}.rds'
     singularity:
-        'workflow/envs/R_env.sif'
+        config["singularities"]["renv"]#'workflow/envs/R_env.sif'
     script:
         '../scripts/mofacell/plot_r2_scores.R'
 
@@ -123,7 +123,7 @@ rule plot_r2_scores_by_project: # Done 12.03.24
         plt = 'plots/mofacell/scores_r2_boxplot_by_project~{dataset}~{subset}~{hvg}.pdf',
         ggs = 'results/mofacell/scores_r2_boxplot_by_project~{dataset}~{subset}~{hvg}.rds'
     singularity:
-        'workflow/envs/R_env.sif'
+        config["singularities"]["renv"]#'workflow/envs/R_env.sif'
     script:
         '../scripts/mofacell/plot_r2_scores_by_project.R'
 
@@ -136,7 +136,7 @@ rule plot_r2_scores_by_disease: # Done 12.03.24
         plt = 'plots/mofacell/scores_r2_boxplot_by_disease~{dataset}~{subset}~{hvg}.pdf',
         ggs = 'results/mofacell/scores_r2_boxplot_by_disease~{dataset}~{subset}~{hvg}.rds'
     singularity:
-        'workflow/envs/R_env.sif'
+        config["singularities"]["renv"]#'workflow/envs/R_env.sif'
     script:
         '../scripts/mofacell/plot_r2_scores_by_disease.R'
     
@@ -149,7 +149,7 @@ rule plot_r2_total:
         plt = 'plots/mofacell/r2_total_heatmap~{dataset}~{subset}~{hvg}.pdf',
         gg = 'results/mofacell/r2_total_heatmap~{dataset}~{subset}~{hvg}.rds'
     singularity:
-        'workflow/envs/R_env.sif'
+        config["singularities"]["renv"]#'workflow/envs/R_env.sif'
     script:
         '../scripts/mofacell/plot_r2_total.R'
 
@@ -164,7 +164,7 @@ rule test_associations:
         associations_csv = 'results/mofacell/associations~{dataset}~{subset}~{hvg}.csv',
         factors_obs_csv = 'results/mofacell/factors_obs~{dataset}~{subset}~{hvg}.csv'
     singularity:
-        'workflow/envs/scanpy.0.0.5.sif'
+        config["singularities"]["scanpy"]#'workflow/envs/scanpy.0.0.5.sif'
     script:
         '../scripts/mofacell/test_associations.py'
 
@@ -177,7 +177,7 @@ rule plot_associations:
         plt2 = 'plots/mofacell/associations_cov~{dataset}~{subset}~{hvg}.pdf',
         plt2png = 'plots/mofacell/associations_cov~{dataset}~{subset}~{hvg}.png',
     singularity:
-        'workflow/envs/R_env.sif'
+        config["singularities"]["renv"]#'workflow/envs/R_env.sif'
     script:
         '../scripts/mofacell/plot_associations.R'
 #######################
@@ -201,6 +201,6 @@ rule plot_qc:
     output:
         'plots/mofacell/{dataset}~{subset}_overall_qc.pdf' #{omic}/{source}/{psbulk}/overall_qc_w_{proj_omic}.pdf'
     singularity:
-        'workflow/envs/scanpy.0.0.3.sif'
+        config["singularities"]["scanpy"]#'workflow/envs/scanpy.0.0.3.sif'
     script:
         '../scripts/mofacell/plot_mofa_qc.py'

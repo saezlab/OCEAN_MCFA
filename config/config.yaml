@@ -1,8 +1,14 @@
 project_name: 'MichiganIgAN'
 organism: 'human'
 
+input: '/mnt/sds-hd/sd22b002/projects/MichiganIgAN/results/preprocessing/Julio_OCEAN_Nereid.h5ad'
+metadata: '/mnt/sds-hd/sd22b002/projects/MichiganIgAN/results/preprocessing/metadata_clean.csv'
 
-nfactors_list: [10, 15, 20, 25, 30, 35, 40]
+singularities:
+  scanpy: '/mnt/sds-hd/sd22b002/projects/MichiganIgAN/workflow/envs/scanpy.0.0.5.sif'
+  mofaxmetacells: '/mnt/sds-hd/sd22b002/projects/MichiganIgAN/workflow/envs/mofaxmetacells.0.0.2.sif'
+  renv: '/mnt/sds-hd/sd22b002/projects/MichiganIgAN/workflow/envs/R_env.sif'
+  #'workflow/envs/mofacell.yaml'
 
 
 preprocessing:

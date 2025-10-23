@@ -30,7 +30,7 @@
 
 rule add_annotations:
     input:
-        h5ad_input = 'data/{dataset}.h5ad'#'results/preprocessing/temp/{dataset}.h5ad',
+        h5ad_input = config["input"], #'results/preprocessing/temp/{dataset}.h5ad',
         annotation_dict = 'data/OCEAN_LR.csv'
     output:
         h5ad_output = 'results/preprocessing/{dataset}.h5ad'
@@ -39,7 +39,7 @@ rule add_annotations:
     wildcard_constraints:
         dataset='Julio_OCEAN_Nereid'
     singularity:
-        'workflow/envs/scanpy.0.0.5.sif'
+        config["singularities"]["scanpy"]#'workflow/envs/scanpy.0.0.5.sif'
     script:
         "../scripts/preprocessing/add_annotations.py"
 
@@ -49,8 +49,6 @@ rule clr:
     output:
         clr_csv = 'results/preprocessing/clr~{dataset}~{subset}.csv',
         prop_csv = 'results/preprocessing/prop~{dataset}~{subset}.csv'
-    # wildcard_constraints:
-    #     subset = 'all|sn10xcanon|sn10xcanon2|sn10x|sn|glomerular'
     params:
         groupby = lambda wildcards: config["subsets"][wildcards.subset]["groupby"],
         cell_subset = 'all', #lambda wildcards: config["subsets"][wildcards.subset]["cell_subset"],
@@ -58,16 +56,6 @@ rule clr:
     resources:
         mem_mb=50000
     singularity:
-        'workflow/envs/scanpy.0.0.5.sif'
+        config["singularities"]["scanpy"]#'workflow/envs/scanpy.0.0.5.sif'
     script:
         '../scripts/preprocessing/clr.py'
-
-# rule clean_up_metadata:
-#     input:
-#         metadata = 'data/Metadata_For_Charlotte.csv'
-#     output:
-#         metadata_clean = 'results/preprocessing/metadata_clean.csv'
-#     singularity:
-#         'workflow/envs/R_env.sif'
-#     script:
-#         '../scripts/preprocessing/clean_up_metadata.R'
