@@ -31,7 +31,7 @@
 rule add_annotations:
     input:
         h5ad_input = config["input"], #'results/preprocessing/temp/{dataset}.h5ad',
-        annotation_dict = 'data/OCEAN_LR.csv'
+        annotation_dict = 'annotations/OCEAN_LR.csv'
     output:
         h5ad_output = 'results/preprocessing/{dataset}.h5ad'
     resources:
