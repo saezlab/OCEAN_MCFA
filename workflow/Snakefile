@@ -1,0 +1,38 @@
+from snakemake.utils import min_version
+min_version("6.0")
+import os
+
+configfile: "config/config.yaml"
+
+workdir: '/mnt/sds-hd/sd22b002/projects/MichiganIgAN/'
+#workdir: '/Users/charlotteboys/GitHub/MichiganIgAN/'
+
+rule all:
+    input:
+        'results/mofacell/Julio_OCEAN_Nereid~LIANA_all.h5mu',
+        'results/mofacell/model~Julio_OCEAN_Nereid~LIANA_all~all.h5ad',
+        'plots/mofacell/associations_cov~Julio_OCEAN_Nereid~LIANA_all~all.png',
+        'plots/mofacell/associations_clr~Julio_OCEAN_Nereid~LIANA_all~all.png',
+        'plots/mofacell/scores_r2_boxplot_by_project~Julio_OCEAN_Nereid~LIANA_all~all.pdf',
+        'plots/mofacell/scores_r2_boxplot_by_disease~Julio_OCEAN_Nereid~LIANA_all~all.pdf',
+        'plots/mofacell/r2_total_heatmap~Julio_OCEAN_Nereid~LIANA_all~all.pdf'
+
+module preprocessing:
+    snakefile: 'rules/preprocessing.smk'
+    config: config
+use rule * from preprocessing as PP_*
+
+module mofacell:
+    snakefile: 'rules/mofacell.smk'
+    config: config
+use rule * from mofacell as MC_*
+
+module downstream:
+    snakefile: 'rules/downstream.smk'
+    config: config
+use rule * from downstream as DS_*
+
+module robustness:
+    snakefile: 'rules/robustness.smk'
+    config: config
+use rule * from robustness as RB_*
