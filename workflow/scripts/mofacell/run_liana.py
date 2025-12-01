@@ -7,10 +7,8 @@ import os as os
 import yaml as yaml
 import numpy as np
 import pandas as pd
-# load muon and mofax
 import muon as mu
 import mofax as mofa
-# 
 import liana as li
 import decoupler as dc
 
@@ -23,15 +21,15 @@ if 'snakemake' in locals():
     sample_key = snakemake.params['sample_key']
     groupby = snakemake.params['groupby']
 else:
-    sample_key = 'EdgarID'
-    groupby = 'celltype'
-    h5ad_input = 'results/mofacell/JulioNereid~sn10xcanon2.h5ad'
+    sample_key = 'OCEAN_MS_Exp_ID'
+    groupby = 'LR_Cluster2'
+    h5ad_input = 'results/mofacell/sn10xLRCluster2.h5ad'
 
     if platform.system() == 'Linux':
-        h5ad_input = os.path.join('/mnt/sds-hd/sd22b002/projects/MichiganIgAN', h5ad_input)
+        h5ad_input = os.path.join('/mnt/sds-hd/sd22b002/projects/OCEAN_MCFA', h5ad_input)
 
     elif platform.system() == 'Darwin':
-        h5ad_input = os.path.join('/Users/charlotteboys/GitHub/MichiganIgAN', h5ad_input)
+        h5ad_input = os.path.join('/Users/charlotteboys/GitHub/OCEAN_MCFA', h5ad_input)
 
 # %% Read in AnnData object
 print('INFO: Loading data')

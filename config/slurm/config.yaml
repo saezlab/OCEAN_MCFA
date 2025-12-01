@@ -14,4 +14,4 @@ jobs: 15
 default-resources:
     - runtime=120
     - mem_mb=16000
-    - partition="single"
+    - partition="cpu-single"

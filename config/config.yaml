@@ -1,67 +1,64 @@
-project_name: 'MichiganIgAN'
+project_name: 'OCEAN_MCFA'
 organism: 'human'
+author: Charlotte Boys
 
-input: '/mnt/sds-hd/sd22b002/projects/MichiganIgAN/results/preprocessing/Julio_OCEAN_Nereid.h5ad'
-metadata: '/mnt/sds-hd/sd22b002/projects/MichiganIgAN/results/preprocessing/metadata_clean.csv'
-
+# User defined
 singularities:
   scanpy: '/mnt/sds-hd/sd22b002/projects/MichiganIgAN/workflow/envs/scanpy.0.0.5.sif'
   mofaxmetacells: '/mnt/sds-hd/sd22b002/projects/MichiganIgAN/workflow/envs/mofaxmetacells.0.0.2.sif'
   renv: '/mnt/sds-hd/sd22b002/projects/MichiganIgAN/workflow/envs/R_env.sif'
-  #'workflow/envs/mofacell.yaml'
 
+root_dir:
+  Linux: /mnt/sds-hd/sd22b002/projects/OCEAN_MCFA
+  Darwin: /Users/charlotteboys/GitHub/OCEAN_MCFA
 
+# Project defined
+input: 'data/OCEAN_v3_Nu_102025a_CZI.h5ad'
+metadata: 'data/metadata.csv'
+sample_key: 'OCEAN_MS_Exp_ID'
+batch_key: 'Project1'
+condition_key: 'Cohort_Manuscript'
 preprocessing:
-  Julio_OCEAN_Nereid:
-    assays: {'main_assay': 'RNA', 'slot': 'counts'}
-    reductions: {'umap': 'umap'} # 'pca' also available I think
-
-mofacell:
-  Julio_OCEAN_Nereid:
-    sn10xcanon2:
-      drop_views: ['tPC-IC']
-
-niches:
-  Julio_OCEAN_Nereid: 
-    all:
-      subset: 'sn10xcanon2'
-      h5mu_liana: 'results/mofacell/LIANA~Julio_OCEAN_Nereid~sn10xcanon2.h5mu'
-      h5mu_input: 'results/mofacell/Julio_OCEAN_Nereid~sn10xcanon2.h5mu'
-      cell_subset: 'all'
-
-clr:
-  LIANA_cnt: 'results/preprocessing/clr~Julio_OCEAN_Nereid~sn10xcanon2.csv'
-  LIANA_all: 'results/preprocessing/clr~Julio_OCEAN_Nereid~sn10x.csv'
-  sn10xcanon2: 'results/preprocessing/clr~Julio_OCEAN_Nereid~sn10xcanon2.csv'
-  preserved_egfr: 'results/preprocessing/clr~Julio_OCEAN_Nereid~sn10x.csv'
-
-subsets:
-  sn10xcanon2:
-    sample_subset: ["Patient59792", "Patient59921", "Patient59922", "Patient60011", "Patient60012",
-                    "Patient60013", "Patient60141", "Patient60661", "Patient60662", "Patient60663", "Patient60841",
-                    "6886-EO-3", "6896-EO-1", "6896-EO-2", "6896-EO-3", "6793-EO-3", "1291-EO-1", "1283-EO-1",
-                    "3809-EO-1", "6801-EO-3", "4083-EO-1", "1134-EO-1", "6817-EO-3", "6793-EO-2", "1134-EO-2",
-                    "6817-EO-1", "1137-EO-2", "1334-EO-1", "1138-EO-2", "1334-EO-2", "6801-EO-2", "1138-EO-1", 
-                    "1408-EO-1", "6831-EO-1", "6801-EO-4", "6801-EO-1", "1134-EO-4", "1283-EO-2", "1144-EO-2", 
-                    "1144-EO-3", "1134-EO-3", "6936-EO-1", "6817-EO-2", "6871-EO-1", "6936-EO-2", "6936-EO-4", 
-                    "6817-EO-4", "6831-EO-2", "1137-EO-1", "6348-EO-2", "6839-EO-4", "6334-EO-1", "6348-EO-1", 
-                    "6334-EO-2", "6831-EO-4", "6793-EO-1", "6839-EO-3", "6839-EO-1", "6896-EO-4", "6831-EO-3", 
-                    "6839-EO-2", "6886-EO-1", "6871-EO-3", "6871-EO-2", "6936-EO-3", "6886-EO-4", "6886-EO-2", 
-                    "9433-EO-3", "9404-EO-2", "9410-EO-2", "9410-EO-3", "9393-EO-3", "9404-EO-3", "9424-EO-2", 
-                    "9424-EO-4", "9404-EO-4", "9424-EO-1", "9410-EO-4", "9410-EO-1", "9433-EO-2", "9433-EO-1", 
-                    "9393-EO-1", "9393-EO-4", "9404-EO-1_FAIL", "9393-EO-2", "9384-EO-2", "9384-EO-4", "9384-EO-1", 
-                    "9384-EO-3", "9424-EO-3", "9433-EO-4", "9480-EO-2", "9441-EO-2", "9480-EO-3", "9441-EO-1", 
-                    "9473-EO-1", "9473-EO-3", "9480-EO-4", "9473-EO-2", "9441-EO-3", "9480-EO-1", "9464-EO-2", 
-                    "9464-EO-4", "9464-EO-3", "9464-EO-1", "9449-EO-4", "9449-EO-3", "9449-EO-2", "9449-EO-1"]
+  assays: {'main_assay': 'RNA', 'slot': 'counts'}
+  reductions: {'umap': 'umap'} # 'pca' also available I think
+model:
+  sn10xLRCluster:
+    sample_subset: ['Exp18', 'Exp19', 'Exp154', 'Exp155', 'Exp2', 'Exp21', 'Exp175', 'Exp169',
+      'Exp167', 'Exp84', 'Exp85', 'Exp152', 'Exp131', 'Exp109', 'Exp214', 'Exp216', 'Exp219',
+      'Exp221', 'Exp226', 'Exp228', 'Exp150', 'Exp148', 'Exp146', 'Exp145', 'Exp144', 'Exp141',
+      'Exp138', 'Exp135', 'Exp133', 'Exp16', 'Exp129', 'Exp128', 'Exp126', 'Exp121', 'Exp123',
+      'Exp119', 'Exp117', 'Exp115', 'Exp113', 'Exp111', 'Exp1', 'Exp197', 'Exp199', 'Exp201',
+        'Exp203', 'Exp206', 'Exp208', 'Exp210', 'Exp212', 'Exp185', 'Exp186', 'Exp184', 'Exp56',
+        'Exp93', 'Exp46', 'Exp36', 'Exp26', 'Exp158', 'Exp139', 'Exp92', 'Exp54', 'Exp183', 'Exp45',
+          'Exp25', 'Exp35', 'Exp91', 'Exp182', 'Exp15', 'Exp58', 'Exp42', 'Exp31', 'Exp30', 'Exp29',
+          'Exp28', 'Exp204', 'Exp94', 'Exp12', 'Exp173', 'Exp74', 'Exp64', 'Exp60', 'Exp61', 'Exp59',
+            'Exp57', 'Exp55', 'Exp8', 'Exp9', 'Exp53', 'Exp52', 'Exp51', 'Exp50', 'Exp49', 'Exp48', 'Exp47',
+            'Exp44', 'Exp6', 'Exp7', 'Exp43', 'Exp41', 'Exp40', 'Exp39', 'Exp38', 'Exp37', 'Exp34', 'Exp4',
+              'Exp5', 'Exp33', 'Exp32']
+    drop_views: ['tPC-IC']
+    groupby: 'LR_Cluster'
+    min_cells: 50
+    hvg: 'hvg'
+    nfactors: 20
+  sn10xLRCluster2:
+    sample_subset: ['Exp18', 'Exp19', 'Exp154', 'Exp155', 'Exp2', 'Exp21', 'Exp175', 'Exp169',
+      'Exp167', 'Exp84', 'Exp85', 'Exp152', 'Exp131', 'Exp109', 'Exp214', 'Exp216', 'Exp219',
+      'Exp221', 'Exp226', 'Exp228', 'Exp150', 'Exp148', 'Exp146', 'Exp145', 'Exp144', 'Exp141',
+      'Exp138', 'Exp135', 'Exp133', 'Exp16', 'Exp129', 'Exp128', 'Exp126', 'Exp121', 'Exp123',
+      'Exp119', 'Exp117', 'Exp115', 'Exp113', 'Exp111', 'Exp1', 'Exp197', 'Exp199', 'Exp201',
+        'Exp203', 'Exp206', 'Exp208', 'Exp210', 'Exp212', 'Exp185', 'Exp186', 'Exp184', 'Exp56',
+        'Exp93', 'Exp46', 'Exp36', 'Exp26', 'Exp158', 'Exp139', 'Exp92', 'Exp54', 'Exp183', 'Exp45',
+          'Exp25', 'Exp35', 'Exp91', 'Exp182', 'Exp15', 'Exp58', 'Exp42', 'Exp31', 'Exp30', 'Exp29',
+          'Exp28', 'Exp204', 'Exp94', 'Exp12', 'Exp173', 'Exp74', 'Exp64', 'Exp60', 'Exp61', 'Exp59',
+            'Exp57', 'Exp55', 'Exp8', 'Exp9', 'Exp53', 'Exp52', 'Exp51', 'Exp50', 'Exp49', 'Exp48', 'Exp47',
+            'Exp44', 'Exp6', 'Exp7', 'Exp43', 'Exp41', 'Exp40', 'Exp39', 'Exp38', 'Exp37', 'Exp34', 'Exp4',
+              'Exp5', 'Exp33', 'Exp32']
+    drop_views: ['NA'] # Must be a list-like object
     groupby: 'LR_Cluster2'
-    cell_subset: 'all'
-    omic: 'snRNA'
+    min_cells: 50
+    hvg: 'hvg'
+    version: 'combined_'
+    nfactors: 20
+clr:
+  groupby: 'LR_Cluster'
 
-
-general_plotting:
-  condition_colors: {'CKD': "#032ca6", 'DKD': "#277ff2", 'H-CKD': "#05c7f2", 'AKI': '#f25e3d', "COV-AKI": "#FF4DA9", 'Ref': "#f2dbae"} #TODO: needs updating
-  colors:
-    Cohort: {'AKI': '#f25e3d', 'CKD': "#032ca6", 'Ref': "#f2dbae"}
-    race: {'U': "#7ce9dc", 'AA': "#994383", 'W': "#3e9539", '0':"#d12952", 'NA': "#14e54b", 'Asian': "#c38bc2", 'W, Other': "#2c4e2f"}
-    omic: {'snRNA': "#e4ccf1", 'scRNA': "#6a2786"}
-    sex: {'M': "#a0e3b7", 'F': "#8e0049"}

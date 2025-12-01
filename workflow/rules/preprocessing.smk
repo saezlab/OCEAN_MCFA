@@ -1,58 +1,12 @@
-# # Complete 15.02.24
-# rule rds_to_seurat:
-#     input:
-#         data = 'data/{dataset}.rds'
-#     output:
-#         seurat = 'results/preprocessing/temp/{dataset}.h5Seurat'
-#     resources:
-#         mem_mb=100000
-#     singularity:
-#         'workflow/envs/dot.0.0.1.sif'
-#     script:
-#         "../scripts/preprocessing/rds_to_h5Seurat.R"
-# # Complete 15.02.24
-# rule seurat_to_h5ad:
-#     input:
-#         data = 'results/preprocessing/temp/{dataset}.h5Seurat'
-#     output:
-#         ad = 'results/preprocessing/temp/{dataset}.h5ad'
-#     resources:
-#         mem_mb=100000
-#     wildcard_constraints:
-#         dataset='Julio_OCEAN_Nereid'
-#     params:
-#         assays = lambda w: config['preprocessing'][w.dataset].get('assays', {}),
-#         reductions = lambda w: config['preprocessing'][w.dataset].get('reductions', {})
-#     singularity:
-#         'workflow/envs/scanpy.0.0.5.sif'
-#     script:
-#         "../scripts/preprocessing/h5Seurat_to_h5ad.py"
-
-rule add_annotations:
-    input:
-        h5ad_input = config["input"], #'results/preprocessing/temp/{dataset}.h5ad',
-        annotation_dict = 'annotations/OCEAN_LR.csv'
-    output:
-        h5ad_output = 'results/preprocessing/{dataset}.h5ad'
-    resources:
-        mem_mb=100000
-    wildcard_constraints:
-        dataset='Julio_OCEAN_Nereid'
-    singularity:
-        config["singularities"]["scanpy"]#'workflow/envs/scanpy.0.0.5.sif'
-    script:
-        "../scripts/preprocessing/add_annotations.py"
-
 rule clr:
     input:
-        h5ad_input = 'results/preprocessing/{dataset}.h5ad'
+        h5ad_input = config["input"]
     output:
-        clr_csv = 'results/preprocessing/clr~{dataset}~{subset}.csv',
-        prop_csv = 'results/preprocessing/prop~{dataset}~{subset}.csv'
+        clr_csv = 'results/preprocessing/clr.csv',
+        prop_csv = 'results/preprocessing/prop.csv'
     params:
-        groupby = lambda wildcards: config["subsets"][wildcards.subset]["groupby"],
-        cell_subset = 'all', #lambda wildcards: config["subsets"][wildcards.subset]["cell_subset"],
-        sample_key = 'EdgarID'
+        groupby = config["clr"]["groupby"], #'LR_Cluster',
+        sample_key = config['sample_key'],
     resources:
         mem_mb=50000
     singularity:

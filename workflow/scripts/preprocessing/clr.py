@@ -11,12 +11,10 @@ if 'snakemake' in locals():
     clr_csv = snakemake.output['clr_csv']
     prop_csv = snakemake.output['prop_csv']
     groupby = snakemake.params['groupby']
-    cell_subset = snakemake.params['cell_subset']
     sample_key = snakemake.params['sample_key']
 else:
     h5ad_input = 'results/preprocessing/Julio_OCEAN_Nereid.h5ad'
     groupby ='celltype' 
-    cell_subset = 'all' 
     sample_key = 'EdgarID'
     clr_csv = 'results/preprocessing/clr~Julio_OCEAN_Nereid~sn10x.csv'
     prop_csv = 'results/preprocessing/prop~Julio_OCEAN_Nereid~sn10x.csv'
@@ -34,13 +32,6 @@ else:
 # %%
 adata = sc.read_h5ad(h5ad_input)
 
-# %% cell_subset if necessary
-if cell_subset in adata.obs[groupby].unique():
-    print("Subsetting Atlas")
-    adata = adata[adata.obs[groupby] == cell_subset]
-else:
-    print("No subsetting performed") 
-
 # %% Regularise groupbys
 # Assuming adata is your AnnData object and 'groupby' is the key for the groupby column
 adata.obs[groupby] = adata.obs[groupby].str.replace('+', 'pos')
@@ -51,7 +42,7 @@ adata.obs[groupby] = adata.obs[groupby].str.replace(' ', '')
 # %%
 # Group the DataFrame by sample and count the occurrences of each cell type
 grouped = adata.obs.groupby(sample_key)[groupby].value_counts().unstack(fill_value=0)
-# Remove rows which are all zero (K68)
+# Remove rows which are all zero 
 grouped = grouped.loc[(grouped != 0).any(axis=1)]
 # Calculate the proportions within each group
 proportions = grouped.div(grouped.sum(axis=1), axis=0).values
