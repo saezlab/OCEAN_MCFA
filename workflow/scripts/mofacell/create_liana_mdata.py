@@ -7,10 +7,8 @@ import os as os
 import yaml as yaml
 import numpy as np
 import pandas as pd
-# load muon and mofax
 import muon as mu
 import mofax as mofa
-# 
 import liana as li
 import decoupler as dc
 
@@ -21,17 +19,21 @@ if 'snakemake' in locals():
     h5ad_input = snakemake.input['h5ad_input']
     h5mu_output = snakemake.output['h5mu_output']
     sample_key = snakemake.params['sample_key']
+    batch_key = snakemake.params['batch_key']
+    condition_key = snakemake.params['condition_key']
     groupby = snakemake.params['groupby']
 else:
-    sample_key = 'EdgarID'
-    groupby = 'celltype'
-    h5ad_input = 'results/mofacell/LIANA~JulioNereid~sn10xcanon2.h5ad'
+    sample_key = 'OCEAN_MS_Exp_ID'
+    groupby = 'LR_Cluster2'
+    batch_key = 'Project1'
+    condition_key = 'Cohort_Charlotte'
+    h5ad_input = 'results/mofacell/LIANA~sn10xLRCluster2.h5ad'
 
     if platform.system() == 'Linux':
-        h5ad_input = os.path.join('/mnt/sds-hd/sd22b002/projects/MichiganIgAN', h5ad_input)
+        h5ad_input = os.path.join('/mnt/sds-hd/sd22b002/projects/OCEAN_MCFA', h5ad_input)
 
     elif platform.system() == 'Darwin':
-        h5ad_input = os.path.join('/Users/charlotteboys/GitHub/MichiganIgAN', h5ad_input)
+        h5ad_input = os.path.join('/Users/charlotteboys/GitHub/OCEAN_MCFA', h5ad_input)
 
 # %% Read in AnnData object
 print('INFO: Loading data')
@@ -42,9 +44,7 @@ print('INFO: Creating multi-view structure')
 mdata = li.multi.lrs_to_views(adata,
                               sample_key = sample_key,
                               score_key='magnitude_rank',
-                              obs_keys=['ID', 'Project1', 'Cohort', 'Prep', 'Method', 'Age', 'Race',
-                                        'eGFRatBx_NEPTUNE', 'UPCRatBx_NEPTUNE', 'Sex',
-                                        'RAASBlockPreBx', 'InterstitialFibrosis', 'TubularAtrophy'], # add those to mdata.obs
+                              obs_keys=[batch_key, condition_key],
                               lr_prop = 0.1, # minimum required proportion of samples to keep an LR
                               lrs_per_sample = 20, # minimum number of interactions to keep a sample in a specific view
                               lrs_per_view = 20, # minimum number of interactions to keep a view

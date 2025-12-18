@@ -3,17 +3,13 @@
 import platform as platform
 import os as os
 import yaml as yaml
-
 import pandas as pd
-
 import liana as li
-
-# load muon and mofax
 import muon as mu
 import mofax as mofa
 
 
-# %% Parse snakemake object TODO: update for new repo
+# %% Parse snakemake object
 if 'snakemake' in locals():
     h5mu_input = snakemake.input['h5mu_input']
     model_output = snakemake.output['model_output']
@@ -25,28 +21,28 @@ if 'snakemake' in locals():
     sample_key = snakemake.params['sample_key']
 
 else:
-    h5mu_input = 'MichiganIgAN/results/mofacell/Julio_OCEAN_Nereid~all.h5mu'
-    model_output = 'MichiganIgAN/results/mofacell/model~Julio_OCEAN_Nereid~all~hvg.h5ad'
-    scores_output = 'MichiganIgAN/results/mofacell/scores~Julio_OCEAN_Nereid~all~hvg.csv'
-    scores_wide_output = 'MichiganIgAN/results/mofacell/widescores~Julio_OCEAN_Nereid~all~hvg.csv'
-    loadings_output = 'MichiganIgAN/results/mofacell/loadings~Julio_OCEAN_Nereid~all~hvg.csv'
+    h5mu_input = 'results/mofacell/combined_sn10xLRCluster2.h5mu'
+    model_output = 'results/mofacell/model~combined_sn10xLRCluster2.h5ad'
+    scores_output = 'results/mofacell/scores~combined_sn10xLRCluster2.csv'
+    scores_wide_output = 'results/mofacell/widescores~combined_sn10xLRCluster2.csv'
+    loadings_output = 'results/mofacell/loadings~combined_sn10xLRCluster2.csv'
     nfactors = 20
     hvg = 'hvg'
-    sample_key = 'EdgarID'
+    sample_key = 'OCEAN_MS_Exp_ID'
 
     if platform.system() == 'Linux':
-        h5mu_input = os.path.join('/mnt/sds-hd/sd22b002/projects', h5mu_input)
-        model_output = os.path.join('/mnt/sds-hd/sd22b002/projects', model_output)
-        scores_output = os.path.join('/mnt/sds-hd/sd22b002/projects', scores_output)
-        scores_wide_output = os.path.join('/mnt/sds-hd/sd22b002/projects', scores_wide_output)
-        loadings_output = os.path.join('/mnt/sds-hd/sd22b002/projects', loadings_output)
+        h5mu_input = os.path.join('/mnt/sds-hd/sd22b002/projects/OCEAN_MCFA', h5mu_input)
+        model_output = os.path.join('/mnt/sds-hd/sd22b002/projects/OCEAN_MCFA', model_output)
+        scores_output = os.path.join('/mnt/sds-hd/sd22b002/projects/OCEAN_MCFA', scores_output)
+        scores_wide_output = os.path.join('/mnt/sds-hd/sd22b002/projects/OCEAN_MCFA', scores_wide_output)
+        loadings_output = os.path.join('/mnt/sds-hd/sd22b002/projects/OCEAN_MCFA', loadings_output)
 
     elif platform.system() == 'Darwin':
-        h5mu_input = os.path.join('/Users/charlotteboys/GitHub', h5mu_input)
-        model_output = os.path.join('/Users/charlotteboys/GitHub', model_output)
-        scores_output = os.path.join('/Users/charlotteboys/GitHub', scores_output)
-        scores_wide_output = os.path.join('/Users/charlotteboys/GitHub', scores_wide_output)
-        loadings_output = os.path.join('/Users/charlotteboys/GitHub', loadings_output)
+        h5mu_input = os.path.join('/Users/charlotteboys/GitHub/OCEAN_MCFA', h5mu_input)
+        model_output = os.path.join('/Users/charlotteboys/GitHub/OCEAN_MCFA', model_output)
+        scores_output = os.path.join('/Users/charlotteboys/GitHub/OCEAN_MCFA', scores_output)
+        scores_wide_output = os.path.join('/Users/charlotteboys/GitHub/OCEAN_MCFA', scores_wide_output)
+        loadings_output = os.path.join('/Users/charlotteboys/GitHub/OCEAN_MCFA', loadings_output)
 
 # %% Read mdata
 print('INFO: Loading assay')
@@ -97,4 +93,3 @@ print('INFO: Saving MOFA factor scores and loadings')
 factor_scores_long.to_csv(scores_output)
 factor_scores_wide.to_csv(scores_wide_output)
 variable_loadings_long.to_csv(loadings_output)
-# %%

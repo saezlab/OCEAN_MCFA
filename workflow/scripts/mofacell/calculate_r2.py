@@ -12,38 +12,40 @@ if 'snakemake' in locals():
     variance_explained_by_sample_output = snakemake.output['variance_explained_by_sample_output']
     variance_explained_total_output = snakemake.output['variance_explained_total_output']
     condition_key = snakemake.params['condition_key']
+    sample_key = snakemake.params['sample_key']
 else:
-    model_input = 'results/mofacell/model~Julio_OCEAN_Nereid~sn10x.h5ad'
-    variance_explained_by_sample_output = 'results/mofacell/r2_by_sample~Julio_OCEAN_Nereid~sn10x.csv'
-    variance_explained_total_output = 'results/mofacell/r2_total~Julio_OCEAN_Nereid~sn10x.csv'
-    condition_key = 'Cohort'
+    model_input = 'results/mofacell/model~combined_sn10xLRCluster2.h5ad'
+    variance_explained_by_sample_output = 'results/mofacell/r2_by_sample~combined_sn10xLRCluster2.csv'
+    variance_explained_total_output = 'results/mofacell/r2_total~combined_sn10xLRCluster2.csv'
+    condition_key = 'Cohort_Charlotte'
+    sample_key = 'OCEAN_MS_Exp_ID'
     if platform.system() == 'Linux':
         model_input = os.path.join('/mnt/sds-hd/sd22b002/projects', model_input)
-        variance_explained_by_sample_output = os.path.join('/mnt/sds-hd/sd22b002/projects/MichiganIgAN', variance_explained_by_sample_output)
-        variance_explained_total_output = os.path.join('/mnt/sds-hd/sd22b002/projects/MichiganIgAN', variance_explained_total_output)
+        variance_explained_by_sample_output = os.path.join('/mnt/sds-hd/sd22b002/projects/OCEAN_MCFA', variance_explained_by_sample_output)
+        variance_explained_total_output = os.path.join('/mnt/sds-hd/sd22b002/projects/OCEAN_MCFA', variance_explained_total_output)
 
     elif platform.system() == 'Darwin':
-        model_input = os.path.join('/Users/charlotteboys/GitHub/MichiganIgAN', model_input)
-        variance_explained_by_sample_output = os.path.join('/Users/charlotteboys/GitHub/MichiganIgAN', variance_explained_by_sample_output)
-        variance_explained_total_output = os.path.join('/Users/charlotteboys/GitHub/MichiganIgAN', variance_explained_total_output)
+        model_input = os.path.join('/Users/charlotteboys/GitHub/OCEAN_MCFA', model_input)
+        variance_explained_by_sample_output = os.path.join('/Users/charlotteboys/GitHub/OCEAN_MCFA', variance_explained_by_sample_output)
+        variance_explained_total_output = os.path.join('/Users/charlotteboys/GitHub/OCEAN_MCFA', variance_explained_total_output)
 
 # %% Load mofa model
 model = mofa.mofa_model(model_input)
 
 # %% Calculate R2 values
 warnings.filterwarnings('ignore')
-model.metadata['EdgarID'] = model.metadata.index.values
+model.metadata[sample_key] = model.metadata.index.values
 variance_explained_sample = model.calculate_variance_explained(
-        factors=None, # all 15 factors
+        factors=None, # all factors
         groups=None,
-        group_label= "EdgarID",
+        group_label= sample_key,
         views=None,
         per_factor = True
     )
 variance_explained_sample_all = model.calculate_variance_explained(
-        factors=None, # all 15 factors
+        factors=None, # all factors
         groups=None,
-        group_label= "EdgarID",
+        group_label= sample_key,
         views=None,
         per_factor = False # uses all factors to reconstruct
     )
@@ -62,7 +64,7 @@ variance_explained_total = model.calculate_variance_explained(
     )
 
 variance_explained_total_allfactors = model.calculate_variance_explained(
-        factors=None, # all 15 factors
+        factors=None, # all factors
         groups=None,
         group_label= None,
         views=None,
