@@ -4,6 +4,11 @@ logs/*
 index/*
 results/*
 plots/*
+figures/*
+supplementary_tables/*
+manuscript/*
+workflow/scripts/mofacell_interpretation
+workflow/scripts/other
 .DS_Store
 .Rproj.user
 .RData
